@@ -11,12 +11,9 @@
 #ifndef TRILL_H
 #define TRILL_H
 
-#if (ARDUINO >= 100)
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-#include "Wire.h"
+#include "driver/i2c.h"
+#include "esp_err.h"
+#include "freertos/task.h"
 
 #define TRILL_SPEED_ULTRA_FAST 	0
 #define TRILL_SPEED_FAST	1
@@ -108,9 +105,9 @@ class Trill : public Touches2D
 
 
 		/* Initialise the hardware */
-		int begin(Device device, uint8_t i2c_address = 255);
+		int begin(Device device, i2c_port_t i2c_port, uint8_t i2c_address = 255);
 		/* Initialise the hardware, it's the same as begin() */
-		int setup(Device device, uint8_t i2c_address = 255) { return begin(device, i2c_address); }
+		int setup(Device device, i2c_port_t i2c_port, uint8_t i2c_address = 255) { return begin(device, i2c_port, i2c_address); }
 
 		/* --- Main communication --- */
 
@@ -168,7 +165,7 @@ class Trill : public Touches2D
 		unsigned int getNumButtons() { return 2 * (getMode() == CENTROID && TRILL_RING == deviceType());};
 
 		/* Read the latest scan value from the sensor. Returns true on success. */
-		boolean read();
+		bool read();
 
 		/* Update the baseline value on the sensor */
 		void updateBaseline();
@@ -181,7 +178,7 @@ class Trill : public Touches2D
 		/* --- Raw data handling --- */
 
 		/* Request raw data; wrappers for Wire */
-		boolean requestRawData(uint8_t max_length = 0xFF);
+		bool requestRawData(uint8_t max_length = 0xFF);
 		int rawDataAvailable();
 		int rawDataRead();
 
@@ -240,6 +237,7 @@ class Trill : public Touches2D
 		};
 
 		uint8_t i2c_address_;	/* Address of this slider on I2C bus */
+		i2c_port_t i2c_port_;	/* I2C port to use */
 		Device device_type_;	/* Which type of device is connected, if any */
 		uint8_t firmware_version_;	/* Firmware version running on the device */
 		Mode mode_;			/* Which mode the device is in */
