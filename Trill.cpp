@@ -116,7 +116,7 @@ int Trill::identify() {
 	if (ret != ESP_OK) {
 		device_type_ = TRILL_NONE;
 		firmware_version_ = 0;
-		return device_type_;
+		return -1;
 	}
 	
 	device_type_ = (Device)buff[1];
