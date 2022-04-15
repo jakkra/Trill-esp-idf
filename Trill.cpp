@@ -110,7 +110,7 @@ int Trill::identify() {
 	ESP_ERROR_CHECK(i2c_master_read(cmd, buff, length - 1, I2C_MASTER_ACK));
 	ESP_ERROR_CHECK(i2c_master_read_byte(cmd, buff + length - 1, I2C_MASTER_NACK));
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	ret = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_RATE_MS);
+	ret = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 	if (ret != ESP_OK) {
@@ -149,7 +149,7 @@ bool Trill::read() {
 	ESP_ERROR_CHECK(i2c_master_read(cmd, buff, length - 1, I2C_MASTER_ACK));
 	ESP_ERROR_CHECK(i2c_master_read_byte(cmd, buff + length - 1, I2C_MASTER_NACK));
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	err = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_RATE_MS);
+	err = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 	if (err != ESP_OK) {
