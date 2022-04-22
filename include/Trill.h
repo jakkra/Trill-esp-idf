@@ -226,7 +226,7 @@ class Trill : public Touches2D
 
 		enum {
 			kNumChannelsBar = 26,
-			kNumChannelsRing = 28,
+			kNumChannelsRing = 30,
 			kNumChannelsMax = 30
 		};
 
@@ -298,7 +298,7 @@ private:
 	{
 	public:
 		typedef uint8_t BYTE;
-		WORD* CSD_waSnsDiff;
+		WORD const * CSD_waSnsDiff;
 		WORD wMinimumCentroidSize = 0;
 		BYTE SLIDER_BITS = 7;
 		WORD wAdjacentCentroidNoiseThreshold = 400; // Trough between peaks needed to identify two centroids

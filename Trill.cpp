@@ -110,13 +110,13 @@ int Trill::identify() {
 	ESP_ERROR_CHECK(i2c_master_read(cmd, buff, length - 1, I2C_MASTER_ACK));
 	ESP_ERROR_CHECK(i2c_master_read_byte(cmd, buff + length - 1, I2C_MASTER_NACK));
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	ret = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_RATE_MS);
+	ret = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 	if (ret != ESP_OK) {
 		device_type_ = TRILL_NONE;
 		firmware_version_ = 0;
-		return device_type_;
+		return -1;
 	}
 	
 	device_type_ = (Device)buff[1];
@@ -149,7 +149,7 @@ bool Trill::read() {
 	ESP_ERROR_CHECK(i2c_master_read(cmd, buff, length - 1, I2C_MASTER_ACK));
 	ESP_ERROR_CHECK(i2c_master_read_byte(cmd, buff + length - 1, I2C_MASTER_NACK));
 	ESP_ERROR_CHECK(i2c_master_stop(cmd));
-	err = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_RATE_MS);
+	err = i2c_master_cmd_begin(i2c_port_, cmd, 50 / portTICK_PERIOD_MS);
 	i2c_cmd_link_delete(cmd);
 
 	if (err != ESP_OK) {
@@ -370,7 +370,7 @@ int Trill::getButtonValue(uint8_t button_num)
 	if(device_type_ != TRILL_RING)
 		return -1;
 
-	return (((buffer_[4*MAX_TOUCH_1D_OR_2D+2*button_num] << 8) + buffer_[4*MAX_TOUCH_1D_OR_2D+2*button_num+1]) & 0x0FFF);
+	return buffer_[2 * MAX_TOUCH_1D_OR_2D + button_num];
 }
 
 unsigned int Trill::getNumChannels()
